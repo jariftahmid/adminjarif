@@ -1,16 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Admin Login</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <h2>Admin Login</h2>
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
-<button onclick="login()">Login</button>
 
+<input type="email" id="email" placeholder="Email"><br><br>
+<input type="password" id="password" placeholder="Password"><br><br>
+<button id="login-btn">Login</button>
+
+<script type="module" src="firebase.js"></script>
 <script type="module" src="auth.js"></script>
+
 </body>
 </html>
