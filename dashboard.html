@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -11,14 +11,15 @@
 
 <input type="text" id="title" placeholder="Article Title"><br><br>
 <input type="text" id="category" placeholder="Category"><br><br>
-<textarea id="content" placeholder="Article Content"></textarea><br><br>
+<input type="text" id="board" placeholder="HSC / SSC / Admission"><br><br>
+<textarea id="summary" placeholder="Short Summary"></textarea><br><br>
+<textarea id="content" placeholder="Full Article Content"></textarea><br><br>
 <input type="file" id="image"><br><br>
 
-<!-- Publish button -->
 <button id="publish-btn">Publish</button>
 
+<script type="module" src="../firebase.js"></script>
 <script type="module" src="dashboard.js"></script>
-<script type="module" src="firebase.js"></script>
 
 </body>
 </html>
