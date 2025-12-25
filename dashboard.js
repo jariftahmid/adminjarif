@@ -1,4 +1,4 @@
-import { collection, addDoc } 
+/*import { collection, addDoc } 
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
@@ -40,7 +40,12 @@ publishBtn.addEventListener("click", async () => {
     document.getElementById("category").value = "";
     document.getElementById("board").value = "";
     document.getElementById("summary").value = "";
-    document.getElementById("content").value = "";
+    document.getElementById("content").value = "";*/
+publishBtn.addEventListener("click", async () => {
+  console.log("Publish clicked"); // debug
+  alert("Button clicked"); // debug
+});
+
     document.getElementById("image-url").value = "";
   } catch (err) {
     alert("Error: " + err.message);
