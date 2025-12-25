@@ -1,15 +1,15 @@
-<script type="module">
 import { signInWithEmailAndPassword } 
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-window.login = function () {
+const loginBtn = document.getElementById("login-btn");
+
+loginBtn.addEventListener("click", () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  signInWithEmailAndPassword(auth, email, password)
+  signInWithEmailAndPassword(window.auth, email, password)
     .then(() => {
-      location.href = "dashboard.html";
+      window.location.href = "dashboard.html";
     })
     .catch(err => alert(err.message));
-};
-</script>
+});
