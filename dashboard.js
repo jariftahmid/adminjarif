@@ -2,17 +2,14 @@ import { collection, addDoc }
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 import { ref, uploadBytes, getDownloadURL } 
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
-
-const publishBtn = document.getElementById("publish-btn");
-
-// Auth guard (ensure admin logged in)
 import { onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
+const publishBtn = document.getElementById("publish-btn");
+
+// Redirect to login if not logged in
 onAuthStateChanged(window.auth, user => {
-  if (!user) {
-    window.location.href = "login.html";
-  }
+  if (!user) window.location.href = "index.html";
 });
 
 publishBtn.addEventListener("click", async () => {
@@ -24,17 +21,16 @@ publishBtn.addEventListener("click", async () => {
   const file = document.getElementById("image").files[0];
 
   if (!title || !category || !board || !summary || !content || !file) {
-    alert("All fields are required!");
-    return;
+    return alert("All fields are required");
   }
 
   try {
-    // Upload image to Firebase Storage
-    const imgRef = ref(window.storage, "articles/" + Date.now());
+    // Upload Image
+    const imgRef = ref(window.storage, "articles/" + Date.now() + "-" + file.name);
     await uploadBytes(imgRef, file);
     const imageURL = await getDownloadURL(imgRef);
 
-    // Save article to Firestore
+    // Save Article
     await addDoc(collection(window.db, "articles"), {
       title,
       category,
@@ -46,8 +42,8 @@ publishBtn.addEventListener("click", async () => {
     });
 
     alert("Article Published Successfully!");
-
-    // Clear form
+    
+    // Clear Form
     document.getElementById("title").value = "";
     document.getElementById("category").value = "";
     document.getElementById("board").value = "";
