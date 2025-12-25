@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Dashboard</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Add Article</h2>
+<h2>Add New Article</h2>
 
-<input id="title" placeholder="Article Title">
-<input id="category" placeholder="Category">
-<input type="file" id="image">
-<textarea id="content" placeholder="Article Content"></textarea>
+<input type="text" id="title" placeholder="Article Title"><br><br>
+<input type="text" id="category" placeholder="Category"><br><br>
+<textarea id="content" placeholder="Article Content"></textarea><br><br>
+<input type="file" id="image"><br><br>
 
-<button onclick="publish()">Publish</button>
+<!-- Publish button -->
+<button id="publish-btn">Publish</button>
 
 <script type="module" src="dashboard.js"></script>
+<script type="module" src="../firebase.js"></script>
+
 </body>
 </html>
