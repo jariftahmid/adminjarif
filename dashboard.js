@@ -41,6 +41,7 @@ publishBtn.addEventListener("click", async () => {
     document.getElementById("board").value = "";
     document.getElementById("summary").value = "";
     document.getElementById("content").value = "";*/
+const publishBtn = document.getElementById("publish-btn");
 publishBtn.addEventListener("click", async () => {
   console.log("Publish clicked"); // debug
   alert("Button clicked"); // debug
