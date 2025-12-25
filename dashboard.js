@@ -48,7 +48,7 @@ publishBtn.addEventListener("click", async () => {
 });
 
     document.getElementById("image-url").value = "";
-  } catch (err) {
+   catch (err) {
     alert("Error: " + err.message);
   }
 });
