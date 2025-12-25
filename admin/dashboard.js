@@ -1,23 +1,28 @@
-import { db, storage } from "../firebase.js";
-import { collection, addDoc } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { ref, uploadBytes, getDownloadURL } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+<script type="module">
+import { collection, addDoc } 
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+import { ref, uploadBytes, getDownloadURL } 
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
 
 window.publish = async function () {
-  const file = image.files[0];
-  const imgRef = ref(storage, "images/" + file.name);
+  const title = document.getElementById("title").value;
+  const category = document.getElementById("category").value;
+  const content = document.getElementById("content").value;
+  const file = document.getElementById("image").files[0];
 
+  const imgRef = ref(storage, "articles/" + Date.now());
   await uploadBytes(imgRef, file);
   const imageURL = await getDownloadURL(imgRef);
 
   await addDoc(collection(db, "articles"), {
-    title: title.value,
-    category: category.value,
+    title,
+    category,
+    content,
     image: imageURL,
-    content: content.value,
     date: new Date()
   });
 
-  alert("Article Published!");
+  alert("Article Published Successfully!");
 };
+</script>
