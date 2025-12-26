@@ -2,31 +2,158 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <script type="module" src="firebase.js"></script>
   <script type="module" src="dashboard.js"></script>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    input, textarea, button { width: 100%; margin-bottom: 10px; padding: 8px; }
-    .article-item { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-    .delete-btn { background: red; color: white; border: none; padding: 6px 10px; cursor: pointer; }
+    :root {
+      --primary: #2563eb;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --sidebar: #1e293b;
+      --text-main: #334155;
+    }
+
+    body { 
+      font-family: 'Inter', system-ui, sans-serif; 
+      background-color: var(--bg);
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    nav {
+      width: 260px;
+      background: var(--sidebar);
+      color: white;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav h1 { font-size: 1.25rem; margin-bottom: 2rem; padding-left: 1rem; }
+
+    /* Main Content Area */
+    main {
+      flex: 1;
+      padding: 2rem;
+      max-width: 1200px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    /* Form Card */
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .full-width { grid-column: span 2; }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 0.9rem;
+    }
+
+    textarea { height: 120px; resize: vertical; }
+
+    /* Buttons */
+    button {
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity 0.2s;
+      border: none;
+      border-radius: 6px;
+    }
+
+    #publish-btn {
+      background: var(--primary);
+      color: white;
+      padding: 12px;
+      margin-top: 1rem;
+    }
+
+    #logoutBtn {
+      background: #475569;
+      color: white;
+      padding: 8px 16px;
+    }
+
+    /* Article List UI */
+    .article-item {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .article-info h4 { margin: 0; color: var(--text-main); }
+    .article-info span { font-size: 0.8rem; color: #64748b; }
+
+    .delete-btn {
+      background: #fee2e2;
+      color: var(--danger);
+      padding: 8px 12px;
+    }
+
+    .delete-btn:hover { background: var(--danger); color: white; }
   </style>
 </head>
 <body>
 
-  <button id="logoutBtn" style="background:gray;color:white;">Logout</button>
+  <nav>
+    <h1>CMS Admin</h1>
+    <div style="flex: 1;">
+      </div>
+    <button id="logoutBtn">Logout</button>
+  </nav>
 
-  <h2>Add New Article</h2>
-  <input type="text" id="title" placeholder="Article Title">
-  <input type="text" id="category" placeholder="Category">
-  <input type="text" id="image" placeholder="Image URL">
-  <textarea id="content" placeholder="Article Content"></textarea>
-  <button id="publish-btn">Publish Article</button>
+  <main>
+    <header>
+      <h2>Dashboard</h2>
+    </header>
 
-  <hr><hr>
+    <section class="card">
+      <h3>Add New Article</h3>
+      <div class="form-grid">
+        <input type="text" id="title" placeholder="Article Title">
+        <input type="text" id="category" placeholder="Category (e.g. Tech, Health)">
+        <input type="text" id="image" class="full-width" placeholder="Image URL">
+        <textarea id="content" class="full-width" placeholder="Write your content here..."></textarea>
+      </div>
+      <button id="publish-btn">Publish Article</button>
+    </section>
 
-  <h2>All Articles</h2>
-  <div id="articleList"></div>
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 2rem 0;">
+
+    <h3>Manage Articles</h3>
+    <div id="articleList">
+      </div>
+  </main>
 
 </body>
 </html>
