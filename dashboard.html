@@ -3,53 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Admin Dashboard</title>
-
   <script type="module" src="firebase.js"></script>
   <script type="module" src="dashboard.js"></script>
-
   <style>
     body { font-family: Arial; padding: 20px; }
-    input, textarea, button {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 8px;
-    }
-    button {
-      cursor: pointer;
-    }
-    .article-item {
-      border: 1px solid #ddd;
-      padding: 10px;
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .delete-btn {
-      background: red;
-      color: white;
-      border: none;
-      padding: 6px 10px;
-    }
+    input, textarea, button { width: 100%; margin-bottom: 10px; padding: 8px; }
+    .article-item { border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .delete-btn { background: red; color: white; border: none; padding: 6px 10px; cursor: pointer; }
   </style>
 </head>
-
 <body>
 
   <h2>Add New Article</h2>
-
   <input type="text" id="title" placeholder="Article Title">
-  <input type="text" id="category" placeholder="Category (SSC / HSC / Physics)">
+  <input type="text" id="category" placeholder="Category">
   <input type="text" id="image" placeholder="Image URL">
   <textarea id="content" placeholder="Article Content"></textarea>
-
   <button id="publish-btn">Publish Article</button>
 
   <hr><hr>
 
   <h2>All Articles</h2>
   <div id="articleList"></div>
-
 </body>
 <script type="module" src="firebase.js"></script>
 <script type="module" src="dashboard.js"></script>
