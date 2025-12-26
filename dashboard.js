@@ -6,10 +6,9 @@ import {
   doc
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-import { onAuthStateChanged } 
-from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// DOM elements
+// DOM
 const titleInput = document.getElementById("title");
 const categoryInput = document.getElementById("category");
 const imageInput = document.getElementById("image");
@@ -17,23 +16,20 @@ const contentInput = document.getElementById("content");
 const publishBtn = document.getElementById("publish-btn");
 const articleList = document.getElementById("articleList");
 
-// 🔐 AUTH GUARD
-document.addEventListener("DOMContentLoaded", () => {
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      alert("You must be logged in to access the dashboard!");
-      window.location.href = "/index.html"; // Redirect to login
-    } else {
-      console.log("User logged in:", user.email);
-      loadDashboard();
-    }
-  });
+// 🔐 Auth guard
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    alert("You must be logged in to access the dashboard!");
+    window.location.href = "/index.html"; // Login page
+  } else {
+    console.log("Logged in as:", user.email);
+    loadDashboard();
+  }
 });
 
-// 🔹 MAIN FUNCTION TO LOAD DASHBOARD
 async function loadDashboard() {
 
-  // ✅ PUBLISH ARTICLE
+  // ✅ Publish
   publishBtn.addEventListener("click", async () => {
     const title = titleInput.value.trim();
     const category = categoryInput.value.trim();
@@ -41,45 +37,38 @@ async function loadDashboard() {
     const content = contentInput.value.trim();
 
     if (!title || !category || !image || !content) {
-      alert("All fields are required!");
+      alert("All fields required!");
       return;
     }
 
     try {
       await addDoc(collection(db, "articles"), {
-        title,
-        category,
-        image,
-        content,
-        date: new Date()
+        title, category, image, content, date: new Date()
       });
 
-      alert("Article Published Successfully!");
-
-      // Clear inputs
+      alert("Article Published!");
       titleInput.value = "";
       categoryInput.value = "";
       imageInput.value = "";
       contentInput.value = "";
 
-      loadArticles(); // Refresh list
+      loadArticles();
     } catch (err) {
       alert("Error: " + err.message);
     }
   });
 
-  // ✅ LOAD ARTICLE LIST + DELETE BUTTON
-  await loadArticles();
+  // ✅ Load articles
+  loadArticles();
 }
 
-// 🔹 LOAD ARTICLES FUNCTION
 async function loadArticles() {
   articleList.innerHTML = "Loading...";
 
   const snapshot = await getDocs(collection(db, "articles"));
   articleList.innerHTML = "";
 
-  snapshot.forEach((docSnap) => {
+  snapshot.forEach(docSnap => {
     const data = docSnap.data();
     const id = docSnap.id;
 
@@ -97,19 +86,16 @@ async function loadArticles() {
     articleList.appendChild(div);
   });
 
-  if (snapshot.empty) {
-    articleList.innerHTML = "<p>No articles found.</p>";
-  }
+  if (snapshot.empty) articleList.innerHTML = "<p>No articles found.</p>";
 }
 
-// 🔹 DELETE ARTICLE FUNCTION
-window.deleteArticle = async function (id) {
-  const confirmDelete = confirm("Are you sure you want to delete this article?");
+window.deleteArticle = async function(id) {
+  const confirmDelete = confirm("Are you sure you want to delete?");
   if (!confirmDelete) return;
 
   try {
     await deleteDoc(doc(db, "articles", id));
-    alert("Article deleted successfully!");
+    alert("Deleted!");
     loadArticles();
   } catch (err) {
     alert("Delete failed: " + err.message);
