@@ -1,151 +1,153 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+/* Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
 
-* {
-  box-sizing: border-box;
+:root {
+  --bg-color: #0b0e14;
+  --card-bg: #161b22;
+  --accent: #ffb703; /* Gold accent */
+  --text-main: #ffffff;
+  --text-dim: #8b949e;
+  --border-color: #30363d;
 }
 
 body {
-  margin: 0;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
   padding: 40px 20px;
-  background-color: #030014;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(76, 29, 149, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
-  color: #fff;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  line-height: 1.6;
 }
 
-/* Logout Button - Floating Top Right */
+/* --- Placeholder Styling --- */
+input::placeholder, 
+textarea::placeholder {
+  color: var(--accent);
+  opacity: 0.5; /* হালকা দেখাবে */
+  font-style: italic;
+  font-weight: 300;
+  transition: all 0.3s ease;
+}
+
+/* ইনপুটে ক্লিক করলে প্লেসহোল্ডার ডানে সরে গিয়ে ভ্যানিশ হবে */
+input:focus::placeholder, 
+textarea:focus::placeholder {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
+/* Logout Button */
 #logoutBtn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
+  float: right;
   width: auto !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 50px;
-  padding: 10px 24px !important;
+  background: transparent;
+  border: 1px solid #f85149;
+  color: #f85149;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  color:white;
+  transition: 0.3s;
 }
 
 #logoutBtn:hover {
-  background: #ff4b4b !important;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(255, 75, 75, 0.2);
+  background: #f85149;
+  color: white;
+  box-shadow: 0 0 15px rgba(248, 81, 73, 0.4);
 }
 
 h2 {
-  font-size: 1.8rem;
-  letter-spacing: -1px;
-  margin-bottom: 25px;
-  background: linear-gradient(to right, #fff, #94a3b8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+  margin-top: 40px;
+  border-left: 4px solid var(--accent);
+  padding-left: 15px;
+  letter-spacing: 1px;
 }
 
-/* Form Styling */
+/* Input Fields */
 input, textarea {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  color: #fff;
-  font-size: 1rem;
-  margin-bottom: 15px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: white;
+  padding: 12px 15px !important;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
 }
 
 input:focus, textarea:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+  border-color: var(--accent);
+  background: #1c2128;
+  box-shadow: 0 0 10px rgba(255, 183, 3, 0.1);
 }
 
 textarea {
-  min-height: 150px;
+  min-height: 120px;
 }
 
-/* The Big Action Button */
+/* Publish Button */
 #publish-btn {
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  background: var(--accent);
+  color: #000;
   border: none;
-  color: white;
+  border-radius: 10px;
   font-weight: 700;
-  font-size: 1rem;
-  border-radius: 14px;
-  padding: 16px !important;
+  font-size: 16px;
+  padding: 14px !important;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
 }
 
 #publish-btn:hover {
-  transform: scale(1.02);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 183, 3, 0.4);
   filter: brightness(1.1);
-  box-shadow: 0 15px 40px -10px rgba(99, 102, 241, 0.7);
 }
 
-/* Dividers */
+/* Separator Line */
 hr {
-  width: 100%;
-  max-width: 600px;
   border: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(to right, transparent, var(--border-color), transparent);
   margin: 50px 0;
 }
 
-/* Article List Container */
-#articleList {
-  width: 100%;
-  max-width: 600px;
-}
-
-/* Individual Article Cards */
+/* Article List */
 .article-item {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 20px;
-  padding: 20px !important;
-  margin-bottom: 20px !important;
-  backdrop-filter: blur(20px);
-  transition: transform 0.3s ease, border-color 0.3s ease;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: 0.3s;
 }
 
 .article-item:hover {
-  transform: translateX(10px);
-  border-color: rgba(139, 92, 246, 0.4);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent);
+  transform: scale(1.02);
 }
 
-/* Delete Button Inside Card */
+/* Delete Button */
 .delete-btn {
   width: auto !important;
-  background: rgba(239, 68, 68, 0.1) !important;
-  color: #f87171 !important;
-  border: 1px solid rgba(239, 68, 68, 0.2) !important;
-  border-radius: 10px;
+  background: rgba(248, 81, 73, 0.1);
+  color: #f85149;
+  border: 1px solid rgba(248, 81, 73, 0.2);
+  border-radius: 6px;
+  padding: 8px 15px !important;
+  font-size: 13px;
   font-weight: 600;
-  transition: all 0.2s;
+  cursor: pointer;
 }
 
 .delete-btn:hover {
-  background: #ef4444 !important;
-  color: white !important;
-  border-color: #ef4444 !important;
-}
-
-/* Responsive adjustment for the inputs width */
-input, textarea, #publish-btn {
-  width: 100%;
-  max-width: 600px;
+  background: #f85149;
+  color: white;
 }
