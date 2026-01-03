@@ -1,125 +1,118 @@
-import { collection, addDoc, getDocs, deleteDoc, doc } 
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc }
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-import { onAuthStateChanged, signOut } 
+import { onAuthStateChanged, signOut }
 from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// DOM
-const titleInput = document.getElementById("title");
-const categoryInput = document.getElementById("category"); // SSC / HSC
-const subjectInput = document.getElementById("subject");   // Physics / Math
-const imageInput = document.getElementById("image");
-const contentInput = document.getElementById("content");
+const allowedAdmins = ["jarif@gmail.com"]; // change this
 
+const titleInput = document.getElementById("title");
+const slugInput = document.getElementById("slug");
+const categoryInput = document.getElementById("category");
+const subjectInput = document.getElementById("subject");
+const imageInput = document.getElementById("image");
 const publishBtn = document.getElementById("publish-btn");
 const articleList = document.getElementById("articleList");
 const logoutBtn = document.getElementById("logoutBtn");
 
+const quill = new Quill('#editor', { theme: 'snow' });
+
+let editId = null;
+
 // 🔐 Auth guard
-onAuthStateChanged(window.auth, (user) => {
-  if (!user) {
-    alert("You must be logged in!");
+onAuthStateChanged(window.auth, user => {
+  if (!user || !allowedAdmins.includes(user.email)) {
+    alert("Access denied");
     window.location.href = "/index.html";
   } else {
-    console.log("Logged in as:", user.email);
-    loadDashboard();
-  }
-});
-
-// 🔹 Logout
-logoutBtn.addEventListener("click", () => {
-  signOut(window.auth).then(() => {
-    window.location.href = "/index.html";
-  });
-});
-
-// 🔹 Load dashboard
-function loadDashboard() {
-  publishBtn.addEventListener("click", publishArticle);
-  loadArticles();
-}
-
-// 🔹 Publish article
-async function publishArticle() {
-  const title = titleInput.value.trim();
-  const category = categoryInput.value.trim(); // SSC / HSC
-  const subject = subjectInput.value.trim();   // Physics / Math
-  const image = imageInput.value.trim();
-  const content = contentInput.value.trim();
-
-  if (!title || !category || !subject || !image || !content) {
-    alert("All fields are required!");
-    return;
-  }
-
-  try {
-    await addDoc(collection(window.db, "articles"), {
-      title,
-      category,
-      subject,
-      image,
-      content,
-      date: new Date()
-    });
-
-    alert("Article Published!");
-
-    titleInput.value = "";
-    categoryInput.value = "";
-    subjectInput.value = "";
-    imageInput.value = "";
-    contentInput.value = "";
-
     loadArticles();
-  } catch (err) {
-    alert("Error: " + err.message);
   }
-}
+});
 
-// 🔹 Load articles list
-async function loadArticles() {
-  articleList.innerHTML = "Loading...";
+logoutBtn.onclick = () => {
+  signOut(window.auth);
+  window.location.href = "/index.html";
+};
 
-  const snapshot = await getDocs(collection(window.db, "articles"));
-  articleList.innerHTML = "";
+// Publish / Update
+publishBtn.onclick = async () => {
+  const data = {
+    title: titleInput.value,
+    slug: slugInput.value,
+    category: categoryInput.value,
+    subject: subjectInput.value,
+    image: imageInput.value,
+    content: quill.root.innerHTML,
+    published: true,
+    createdAt: new Date()
+  };
 
-  if (snapshot.empty) {
-    articleList.innerHTML = "<p>No articles found.</p>";
+  if (!data.title || !data.slug) {
+    alert("Title & Slug required");
     return;
   }
 
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
-    const id = docSnap.id;
+  if (editId) {
+    await updateDoc(doc(window.db, "articles", editId), data);
+    alert("Updated");
+    editId = null;
+    publishBtn.innerText = "Publish";
+  } else {
+    await addDoc(collection(window.db, "articles"), data);
+    alert("Published");
+  }
 
+  clearForm();
+  loadArticles();
+};
+
+function clearForm() {
+  titleInput.value = "";
+  slugInput.value = "";
+  categoryInput.value = "";
+  subjectInput.value = "";
+  imageInput.value = "";
+  quill.root.innerHTML = "";
+}
+
+// Load articles
+async function loadArticles() {
+  articleList.innerHTML = "";
+  const snap = await getDocs(collection(window.db, "articles"));
+
+  snap.forEach(d => {
     const div = document.createElement("div");
     div.className = "article-item";
-
     div.innerHTML = `
+      <span>${d.data().title}</span>
       <div>
-        <strong>${data.title}</strong><br>
-        <small>${data.category} • ${data.subject}</small>
+        <button onclick="editArticle('${d.id}')">Edit</button>
+        <button onclick="deleteArticle('${d.id}')">Delete</button>
       </div>
-      <button class="delete-btn" data-id="${id}">Delete</button>
     `;
-
-    div.querySelector(".delete-btn").addEventListener("click", () => {
-      deleteArticle(id);
-    });
-
     articleList.appendChild(div);
   });
 }
 
-// 🔹 Delete article
-async function deleteArticle(id) {
-  if (!confirm("Are you sure you want to delete this article?")) return;
+window.editArticle = async (id) => {
+  const ref = doc(window.db, "articles", id);
+  const snap = await getDoc(ref);
+  const d = snap.data();
 
-  try {
+  titleInput.value = d.title;
+  slugInput.value = d.slug;
+  categoryInput.value = d.category;
+  subjectInput.value = d.subject;
+  imageInput.value = d.image;
+  quill.root.innerHTML = d.content;
+
+  editId = id;
+  publishBtn.innerText = "Update";
+};
+
+window.deleteArticle = async (id) => {
+  if (confirm("Delete?")) {
     await deleteDoc(doc(window.db, "articles", id));
-    alert("Article Deleted!");
     loadArticles();
-  } catch (err) {
-    alert("Delete failed: " + err.message);
   }
-}
+};
