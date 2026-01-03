@@ -1,126 +1,150 @@
-/* Custom Scrollbar for that premium feel */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0b0f1a; }
-::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
 
 body {
-  background: radial-gradient(circle at top center, #1e293b 0%, #0f172a 100%);
-  color: #e2e8f0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  max-width: 700px;
-  margin: 0 auto;
-  line-height: 1.6;
+  margin: 0;
+  padding: 40px 20px;
+  background-color: #030014;
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(76, 29, 149, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-h2 {
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  color: #38bdf8;
-  margin-top: 30px;
-  text-transform: uppercase;
-  font-size: 1.2rem;
-}
-
-/* Logout Button */
+/* Logout Button - Floating Top Right */
 #logoutBtn {
-  position: absolute;
+  position: fixed;
   top: 20px;
   right: 20px;
   width: auto !important;
   background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 8px;
-  font-size: 12px;
-  transition: 0.3s;
+  border-radius: 50px;
+  padding: 10px 24px !important;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 #logoutBtn:hover {
-  background: #ef4444 !important;
-  border-color: #ef4444 !important;
+  background: #ff4b4b !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255, 75, 75, 0.2);
 }
 
-/* Form Inputs & Textarea */
+h2 {
+  font-size: 1.8rem;
+  letter-spacing: -1px;
+  margin-bottom: 25px;
+  background: linear-gradient(to right, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Form Styling */
 input, textarea {
-  background: rgba(30, 41, 59, 0.7);
-  border: 1px solid #334155;
-  border-radius: 12px;
-  color: #f8fafc;
-  font-size: 15px;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 15px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input:focus, textarea:focus {
   outline: none;
-  border-color: #38bdf8;
-  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
-  background: rgba(30, 41, 59, 1);
+  background: rgba(255, 255, 255, 0.07);
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
 }
 
 textarea {
-  min-height: 120px;
-  resize: vertical;
+  min-height: 150px;
 }
 
-/* Publish Button */
+/* The Big Action Button */
 #publish-btn {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   border: none;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 16px;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 14px;
+  padding: 16px !important;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-  margin-top: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
+  transition: all 0.3s ease;
 }
 
 #publish-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  transform: scale(1.02);
+  filter: brightness(1.1);
+  box-shadow: 0 15px 40px -10px rgba(99, 102, 241, 0.7);
 }
 
-#publish-btn:active {
-  transform: translateY(0);
-}
-
-/* Separator */
+/* Dividers */
 hr {
+  width: 100%;
+  max-width: 600px;
   border: 0;
   height: 1px;
-  background: linear-gradient(to right, transparent, #334155, transparent);
-  margin: 40px 0;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+  margin: 50px 0;
 }
 
-/* Article List Item */
+/* Article List Container */
+#articleList {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* Individual Article Cards */
 .article-item {
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 15px 20px;
-  backdrop-filter: blur(10px);
-  transition: 0.3s;
+  border-radius: 20px;
+  padding: 20px !important;
+  margin-bottom: 20px !important;
+  backdrop-filter: blur(20px);
+  transition: transform 0.3s ease, border-color 0.3s ease;
 }
 
 .article-item:hover {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: #38bdf8;
-  transform: scale(1.01);
+  transform: translateX(10px);
+  border-color: rgba(139, 92, 246, 0.4);
+  background: rgba(255, 255, 255, 0.04);
 }
 
-/* Delete Button */
+/* Delete Button Inside Card */
 .delete-btn {
-  background: rgba(239, 68, 68, 0.1) !important;
-  color: #ef4444 !important;
-  border: 1px solid rgba(239, 68, 68, 0.2) !important;
-  border-radius: 8px !important;
-  font-weight: 600;
   width: auto !important;
-  transition: 0.2s;
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #f87171 !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .delete-btn:hover {
   background: #ef4444 !important;
   color: white !important;
+  border-color: #ef4444 !important;
+}
+
+/* Responsive adjustment for the inputs width */
+input, textarea, #publish-btn {
+  width: 100%;
+  max-width: 600px;
 }
