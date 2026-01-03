@@ -1,0 +1,126 @@
+/* Custom Scrollbar for that premium feel */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0f1a; }
+::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
+
+body {
+  background: radial-gradient(circle at top center, #1e293b 0%, #0f172a 100%);
+  color: #e2e8f0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+h2 {
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #38bdf8;
+  margin-top: 30px;
+  text-transform: uppercase;
+  font-size: 1.2rem;
+}
+
+/* Logout Button */
+#logoutBtn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: auto !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px;
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+#logoutBtn:hover {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+}
+
+/* Form Inputs & Textarea */
+input, textarea {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  color: #f8fafc;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #38bdf8;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+  background: rgba(30, 41, 59, 1);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Publish Button */
+#publish-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  margin-top: 10px;
+}
+
+#publish-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+}
+
+#publish-btn:active {
+  transform: translateY(0);
+}
+
+/* Separator */
+hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #334155, transparent);
+  margin: 40px 0;
+}
+
+/* Article List Item */
+.article-item {
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 15px 20px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+.article-item:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #38bdf8;
+  transform: scale(1.01);
+}
+
+/* Delete Button */
+.delete-btn {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  border-radius: 8px !important;
+  font-weight: 600;
+  width: auto !important;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  background: #ef4444 !important;
+  color: white !important;
+}
