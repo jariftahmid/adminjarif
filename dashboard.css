@@ -1,153 +1,246 @@
-/* Google Font Import */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
-
+/* --- ROOT & THEME VARIABLES --- */
 :root {
-  --bg-color: #0b0e14;
-  --card-bg: #161b22;
-  --accent: #ffb703; /* Gold accent */
-  --text-main: #ffffff;
-  --text-dim: #8b949e;
-  --border-color: #30363d;
+    --sidebar-bg: #0f172a; /* Deep Slate */
+    --primary: #007aff;    /* Apple Blue */
+    --primary-light: rgba(0, 122, 255, 0.1);
+    --bg-main: #f8fafc;
+    --text-dark: #1e293b;
+    --text-soft: #64748b;
+    --white: #ffffff;
+    --border: #e2e8f0;
+    --radius: 14px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- GLOBAL RESET --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', 'Poppins', sans-serif;
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  font-family: 'Outfit', sans-serif;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 40px 20px;
-  line-height: 1.6;
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    overflow-x: hidden;
 }
 
-/* --- Placeholder Styling --- */
-input::placeholder, 
-textarea::placeholder {
-  color: var(--accent);
-  opacity: 0.5; /* হালকা দেখাবে */
-  font-style: italic;
-  font-weight: 300;
-  transition: all 0.3s ease;
+/* --- DASHBOARD LAYOUT --- */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
 }
 
-/* ইনপুটে ক্লিক করলে প্লেসহোল্ডার ডানে সরে গিয়ে ভ্যানিশ হবে */
-input:focus::placeholder, 
-textarea:focus::placeholder {
-  transform: translateX(20px);
-  opacity: 0;
+/* --- SIDEBAR DESIGN --- */
+.sidebar {
+    width: 280px;
+    background: var(--sidebar-bg);
+    color: var(--white);
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
 }
 
-/* Logout Button */
+.sidebar h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    padding-left: 10px;
+    letter-spacing: 1px;
+    color: var(--primary);
+    text-transform: uppercase;
+}
+
+.sidebar ul {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar span {
+    display: block;
+    padding: 12px 15px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #94a3b8;
+    cursor: pointer;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.sidebar span:hover {
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Submenu Styling */
+.submenu {
+    margin-top: 5px;
+    padding-left: 20px;
+}
+
+.submenu li {
+    padding: 10px 15px;
+    font-size: 14px;
+    color: #cbd5e1;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.submenu li::before {
+    content: '•';
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.submenu li:hover {
+    background: var(--primary);
+    color: var(--white);
+    transform: translateX(5px);
+}
+
 #logoutBtn {
-  float: right;
-  width: auto !important;
-  background: transparent;
-  border: 1px solid #f85149;
-  color: #f85149;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
+    background: rgba(244, 63, 94, 0.1);
+    color: #fb7185;
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: var(--transition);
 }
 
 #logoutBtn:hover {
-  background: #f85149;
-  color: white;
-  box-shadow: 0 0 15px rgba(248, 81, 73, 0.4);
+    background: #f43f5e;
+    color: white;
 }
 
-h2 {
-  font-weight: 600;
-  margin-top: 40px;
-  border-left: 4px solid var(--accent);
-  padding-left: 15px;
-  letter-spacing: 1px;
+/* --- MAIN CONTENT AREA --- */
+.main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 50px;
 }
 
-/* Input Fields */
-input, textarea {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  color: white;
-  padding: 12px 15px !important;
-  font-size: 15px;
-  box-sizing: border-box;
-  transition: all 0.3s ease;
+.cms-section {
+    display: none; /* JavaScript handle করবে */
+    background: var(--white);
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    border: 1px solid var(--border);
+    animation: fadeIn 0.5s ease-out;
 }
 
-input:focus, textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-  background: #1c2128;
-  box-shadow: 0 0 10px rgba(255, 183, 3, 0.1);
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-textarea {
-  min-height: 120px;
+.cms-section h2 {
+    font-size: 26px;
+    margin-bottom: 30px;
+    font-weight: 800;
+    color: var(--text-dark);
 }
 
-/* Publish Button */
-#publish-btn {
-  background: var(--accent);
-  color: #000;
-  border: none;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 16px;
-  padding: 14px !important;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 183, 3, 0.2);
+/* --- FORM ELEMENTS --- */
+input, select {
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 2px solid #f1f5f9;
+    background: #f8fafc;
+    font-size: 15px;
+    outline: none;
+    transition: var(--transition);
 }
 
-#publish-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(255, 183, 3, 0.4);
-  filter: brightness(1.1);
+input:focus, select:focus {
+    border-color: var(--primary);
+    background: var(--white);
+    box-shadow: 0 0 0 4px var(--primary-light);
 }
 
-/* Separator Line */
-hr {
-  border: 0;
-  height: 1px;
-  background: linear-gradient(to right, transparent, var(--border-color), transparent);
-  margin: 50px 0;
+h4 {
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    letter-spacing: 0.5px;
 }
 
-/* Article List */
-.article-item {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 15px 20px;
-  margin-bottom: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: 0.3s;
+/* --- QUILL EDITOR CUSTOMIZATION --- */
+.ql-toolbar.ql-snow {
+    border-radius: 12px 12px 0 0;
+    border: 2px solid #f1f5f9;
+    background: #f8fafc;
 }
 
-.article-item:hover {
-  border-color: var(--accent);
-  transform: scale(1.02);
+.ql-container.ql-snow {
+    border-radius: 0 0 12px 12px;
+    border: 2px solid #f1f5f9;
+    margin-bottom: 30px;
+    font-size: 16px;
 }
 
-/* Delete Button */
-.delete-btn {
-  width: auto !important;
-  background: rgba(248, 81, 73, 0.1);
-  color: #f85149;
-  border: 1px solid rgba(248, 81, 73, 0.2);
-  border-radius: 6px;
-  padding: 8px 15px !important;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+/* --- BUTTONS --- */
+button[id*="publish"] {
+    background: var(--primary);
+    color: white;
+    padding: 16px 30px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2);
+    transition: var(--transition);
+    width: 100%;
+    margin-top: 10px;
 }
 
-.delete-btn:hover {
-  background: #f85149;
-  color: white;
+button[id*="publish"]:hover {
+    background: #006ae6;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0, 122, 255, 0.3);
+}
+
+/* --- LIST VIEW (For Editing) --- */
+#articleList, #questionList {
+    display: grid;
+    gap: 15px;
+}
+
+.list-item {
+    background: #f8fafc;
+    padding: 15px 25px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border);
+}
+
+.list-item h3 { font-size: 16px; font-weight: 600; }
+
+.btn-edit { background: var(--primary); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; }
+.btn-delete { background: #f43f5e; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
+
+/* --- RESPONSIVE --- */
+@media (max-width: 992px) {
+    .sidebar { width: 80px; padding: 20px 10px; }
+    .sidebar h2, .sidebar span, .submenu { display: none; }
+    .main-content { margin-left: 80px; padding: 20px; }
 }
