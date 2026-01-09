@@ -1,0 +1,98 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif; /* Modern, highly readable font */
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Deep, professional gradient background */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* The Login Card */
+.login-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+h2 {
+  color: #1a202c;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #718096;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+/* Input Styling */
+.input-group {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Button Styling */
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #5a67d8;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Extras */
+.forgot-password {
+  display: block;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #718096;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.forgot-password:hover {
+  color: #667eea;
+}
