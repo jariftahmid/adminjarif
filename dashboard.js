@@ -16,7 +16,7 @@ const publishBtn = document.getElementById("publish-btn");
 const articleList = document.getElementById("articleList");
 const logoutBtn = document.getElementById("logoutBtn");
 
-// Editor
+// Quill Editor
 const quill = new Quill('#editor', { theme: 'snow' });
 
 let editId = null;
@@ -37,14 +37,14 @@ logoutBtn.onclick = async () => {
   location.href = "/index.html";
 };
 
-// PUBLISH / UPDATE
+// PUBLISH / UPDATE ARTICLE
 publishBtn.onclick = async () => {
   const data = {
-    title: titleInput.value,
-    slug: slugInput.value,
-    category: categoryInput.value,
-    subject: subjectInput.value,
-    image: imageInput.value,
+    title: titleInput.value.trim(),
+    slug: slugInput.value.trim(),
+    category: categoryInput.value.trim(),
+    subject: subjectInput.value.trim(),
+    image: imageInput.value.trim(),
     content: quill.root.innerHTML,
     published: true,
     createdAt: new Date()
@@ -55,22 +55,32 @@ publishBtn.onclick = async () => {
     return;
   }
 
-  if (editId) {
-    await updateDoc(doc(db, "articles", editId), data);
-    editId = null;
-    publishBtn.innerText = "Publish";
-  } else {
-    await addDoc(collection(db, "articles"), data);
-  }
+  try {
+    if (editId) {
+      await updateDoc(doc(db, "articles", editId), data);
+      editId = null;
+      publishBtn.innerText = "Publish";
+    } else {
+      await addDoc(collection(db, "articles"), data);
+    }
 
-  clearForm();
-  loadArticles();
+    clearForm();
+    loadArticles();
+    alert("Article Published!");
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
 };
 
 // LOAD ARTICLES
 async function loadArticles() {
   articleList.innerHTML = "";
   const snap = await getDocs(collection(db, "articles"));
+
+  if (snap.empty) {
+    articleList.innerHTML = "<p>No articles found.</p>";
+    return;
+  }
 
   snap.forEach(d => {
     const div = document.createElement("div");
@@ -82,7 +92,6 @@ async function loadArticles() {
         <button data-del="${d.id}">Delete</button>
       </div>
     `;
-
     div.querySelector("[data-edit]").onclick = () => editArticle(d.id);
     div.querySelector("[data-del]").onclick = () => deleteArticle(d.id);
 
@@ -90,7 +99,7 @@ async function loadArticles() {
   });
 }
 
-// EDIT
+// EDIT ARTICLE
 async function editArticle(id) {
   const snap = await getDoc(doc(db, "articles", id));
   const d = snap.data();
@@ -106,14 +115,14 @@ async function editArticle(id) {
   publishBtn.innerText = "Update";
 }
 
-// DELETE
+// DELETE ARTICLE
 async function deleteArticle(id) {
   if (!confirm("Delete article?")) return;
   await deleteDoc(doc(db, "articles", id));
   loadArticles();
 }
 
-// CLEAR
+// CLEAR FORM
 function clearForm() {
   titleInput.value = "";
   slugInput.value = "";
