@@ -78,16 +78,17 @@ document.getElementById("publish-question-btn").onclick = async () => {
   if(!questionQuill || !solutionQuill) { alert("Editors not loaded"); return; }
 
   const data = {
-    title: document.getElementById("q-title").value,
-    board: document.getElementById("board").value,
-    class: document.getElementById("class").value,
-    subject: document.getElementById("subject-q").value,
-    chapter: document.getElementById("chapter").value,
-    slug: document.getElementById("slug-q").value,
-    question: questionQuill.root.innerHTML,
-    solution: solutionQuill.root.innerHTML,
-    createdAt: new Date()
-  };
+  title: document.getElementById("q-title").value, // optional
+  board: document.getElementById("board").value,
+  year: document.getElementById("year").value,
+  subject: document.getElementById("subject-q").value,
+  chapter: document.getElementById("chapter").value,
+  slug: document.getElementById("slug-q").value,
+  question: questionQuill.root.innerHTML,
+  solution: solutionQuill.root.innerHTML,
+  createdAt: new Date()
+};
+
 
   if(!data.title || !data.slug) { alert("Title & Slug required"); return; }
 
