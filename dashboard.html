@@ -32,6 +32,7 @@
   </aside>
 
   <main class="main-content">
+    <!-- Add Article -->
     <div id="add-article-section" class="cms-section">
       <h2>Add Article</h2>
       <input id="title" placeholder="Title">
@@ -43,14 +44,15 @@
       <button id="publish-article-btn">Publish Article</button>
     </div>
 
+    <!-- Add Question -->
     <div id="add-question-section" class="cms-section">
       <h2>Add Question</h2>
-      <input id="q-title" placeholder="Title">
       <select id="board">
+        <option value="">Select Board</option>
         <option value="SSC">SSC</option>
         <option value="HSC">HSC</option>
       </select>
-      <input id="class" placeholder="Class">
+      <input id="year" placeholder="Year">
       <input id="subject-q" placeholder="Subject">
       <input id="chapter" placeholder="Chapter">
       <input id="slug-q" placeholder="Slug">
@@ -61,11 +63,13 @@
       <button id="publish-question-btn">Publish Question</button>
     </div>
 
+    <!-- Edit Articles -->
     <div id="edit-article-section" class="cms-section">
       <h2>Edit Articles</h2>
       <div id="articleList"></div>
     </div>
 
+    <!-- Edit Questions -->
     <div id="edit-question-section" class="cms-section">
       <h2>Edit Questions</h2>
       <div id="questionList"></div>
