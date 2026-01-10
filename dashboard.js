@@ -2,157 +2,180 @@ import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// === Sidebar Menu ===
+// === Quill Editors Initialization ===
+let quill, questionQuill, solutionQuill;
+
+// Editor initialize hobe DOM load holei
+document.addEventListener("DOMContentLoaded", () => {
+    quill = new Quill('#editor', { theme: 'snow' });
+    questionQuill = new Quill('#questionEditor', { theme: 'snow' });
+    solutionQuill = new Quill('#solutionEditor', { theme: 'snow' });
+});
+
+// === Sidebar Menu Toggling ===
 const sections = {
-  "add-article-btn":"add-article-section",
-  "add-question-btn":"add-question-section",
-  "edit-article-btn":"edit-article-section",
-  "edit-question-btn":"edit-question-section"
+    "add-article-btn": "add-article-section",
+    "add-question-btn": "add-question-section",
+    "edit-article-btn": "edit-article-section",
+    "edit-question-btn": "edit-question-section"
 };
 
 Object.keys(sections).forEach(btnId => {
-  document.getElementById(btnId).onclick = () => {
-    document.querySelectorAll(".cms-section").forEach(s => s.style.display="none");
-    document.getElementById(sections[btnId]).style.display="block";
-  };
+    document.getElementById(btnId).onclick = () => {
+        showSection(sections[btnId]);
+    };
 });
 
-// === Logout ===
-document.getElementById("logoutBtn").onclick = async () => {
-  try {
-    await signOut(auth);
-    location.href="/index.html";
-  } catch(err) {
-    alert("Logout failed: " + err.message);
-  }
+function showSection(sectionId) {
+    document.querySelectorAll(".cms-section").forEach(s => s.style.display = "none");
+    document.getElementById(sectionId).style.display = "block";
+}
+
+// === Custom Dropdown Logic (SSC/HSC & Boards) ===
+function setupDropdown(divId, optionsId) {
+    const div = document.getElementById(divId);
+    const options = document.getElementById(optionsId);
+
+    div.onclick = (e) => {
+        e.stopPropagation();
+        options.style.display = options.style.display === "block" ? "none" : "block";
+    };
+
+    options.querySelectorAll("div").forEach(opt => {
+        opt.onclick = () => {
+            div.innerText = opt.innerText;
+            div.dataset.value = opt.getAttribute("data-value");
+            options.style.display = "none";
+        };
+    });
+}
+
+setupDropdown("exam-div", "exam-options");
+setupDropdown("board-div", "board-options");
+
+// Close dropdowns when clicking outside
+window.onclick = () => {
+    document.querySelectorAll(".custom-select-options").forEach(opt => opt.style.display = "none");
 };
-
-// === Quill Editors ===
-let quill, questionQuill, solutionQuill;
-document.addEventListener("DOMContentLoaded", () => {
-  quill = new Quill('#editor', {theme:'snow'});
-  questionQuill = new Quill('#questionEditor', {theme:'snow'});
-  solutionQuill = new Quill('#solutionEditor', {theme:'snow'});
-});
 
 // === Global edit IDs ===
 let editArticleId = null;
 let editQuestionId = null;
 
-// === Publish Article ===
+// === Publish/Update Article ===
 document.getElementById("publish-article-btn").onclick = async () => {
-  const data = {
-    title: document.getElementById("title").value,
-    slug: document.getElementById("slug").value,
-    category: document.getElementById("category").value,
-    subject: document.getElementById("subject").value,
-    image: document.getElementById("image").value,
-    content: quill.root.innerHTML,
-    createdAt: new Date()
-  };
+    const data = {
+        title: document.getElementById("title").value,
+        slug: document.getElementById("slug").value,
+        category: document.getElementById("category").value,
+        subject: document.getElementById("subject").value,
+        image: document.getElementById("image").value,
+        content: quill.root.innerHTML,
+        updatedAt: new Date()
+    };
 
-  if(!data.title || !data.slug) { alert("Fill title & slug"); return; }
+    if (!data.title || !data.slug) { alert("Fill title & slug"); return; }
 
-  try {
-    if(editArticleId){
-      await updateDoc(doc(db,"articles",editArticleId), data);
-      alert("Article Updated!");
-      editArticleId = null;
-    } else {
-      await addDoc(collection(db,"articles"), data);
-      alert("Article Published!");
+    try {
+        if (editArticleId) {
+            await updateDoc(doc(db, "articles", editArticleId), data);
+            alert("Article Updated!");
+            editArticleId = null;
+            document.getElementById("publish-article-btn").innerText = "Publish Article";
+        } else {
+            data.createdAt = new Date();
+            await addDoc(collection(db, "articles"), data);
+            alert("Article Published!");
+        }
+        resetArticleForm();
+        loadArticles();
+    } catch (err) {
+        alert("Action failed: " + err.message);
     }
-    loadArticles();
-  } catch(err){
-    alert("Publish failed: " + err.message);
-  }
 };
 
-// === Publish Question ===
+// === Publish/Update Question ===
 document.getElementById("publish-question-btn").onclick = async () => {
-  const data = {
-    exam: document.getElementById("exam-div").dataset.value,
-    board: document.getElementById("board-div").dataset.value,
-    year: document.getElementById("year").value,
-    subject: document.getElementById("subject-q").value,
-    slug: document.getElementById("slug-q").value,
-    question: questionQuill.root.innerHTML,
-    solution: solutionQuill.root.innerHTML,
-    createdAt: new Date()
-  };
+    const data = {
+        exam: document.getElementById("exam-div").dataset.value,
+        board: document.getElementById("board-div").dataset.value,
+        year: document.getElementById("year").value,
+        subject: document.getElementById("subject-q").value,
+        slug: document.getElementById("slug-q").value,
+        question: questionQuill.root.innerHTML,
+        solution: solutionQuill.root.innerHTML,
+        updatedAt: new Date()
+    };
 
-  if(!data.exam || !data.board || !data.year || !data.subject || !data.slug){
-    alert("Fill all fields");
-    return;
-  }
-
-  try{
-    if(editQuestionId){
-      await updateDoc(doc(db,"boardQuestions",editQuestionId), data);
-      alert("Question Updated!");
-      editQuestionId = null;
-    } else {
-      await addDoc(collection(db,"boardQuestions"), data);
-      alert("Question Published!");
+    if (!data.exam || !data.board || !data.year || !data.slug) {
+        alert("Fill all fields including dropdowns");
+        return;
     }
-    loadQuestions();
-  } catch(err){
-    alert("Publish failed: " + err.message);
-  }
+
+    try {
+        if (editQuestionId) {
+            await updateDoc(doc(db, "boardQuestions", editQuestionId), data);
+            alert("Question Updated!");
+            editQuestionId = null;
+            document.getElementById("publish-question-btn").innerText = "Publish Question";
+        } else {
+            data.createdAt = new Date();
+            await addDoc(collection(db, "boardQuestions"), data);
+            alert("Question Published!");
+        }
+        resetQuestionForm();
+        loadQuestions();
+    } catch (err) {
+        alert("Action failed: " + err.message);
+    }
 };
 
-// === Load Articles ===
-async function loadArticles(){
-  const list = document.getElementById("articleList");
-  list.innerHTML="";
-  try{
-    const snap = await getDocs(collection(db,"articles"));
-    snap.forEach(d=>{
-      const div = document.createElement("div");
-      div.className="cms-list-item";
-      div.innerHTML = `
-        <span>${d.data().title}</span>
-        <div>
-          <button data-edit="${d.id}">Edit</button>
-          <button data-del="${d.id}">Delete</button>
-        </div>`;
-      div.querySelector("[data-edit]").onclick = ()=>editArticle(d.id);
-      div.querySelector("[data-del]").onclick = ()=>deleteArticle(d.id);
-      list.appendChild(div);
+// === Load Data Functions ===
+async function loadArticles() {
+    const list = document.getElementById("articleList");
+    list.innerHTML = "Loading...";
+    const snap = await getDocs(collection(db, "articles"));
+    list.innerHTML = "";
+    snap.forEach(d => {
+        const item = d.data();
+        const div = document.createElement("div");
+        div.className = "cms-list-item";
+        div.innerHTML = `
+            <span>${item.title}</span>
+            <div>
+                <button class="edit-btn" data-id="${d.id}">Edit</button>
+                <button class="del-btn" data-id="${d.id}">Delete</button>
+            </div>`;
+        div.querySelector(".edit-btn").onclick = () => editArticle(d.id);
+        div.querySelector(".del-btn").onclick = () => deleteArticle(d.id);
+        list.appendChild(div);
     });
-  } catch(err){
-    alert("Failed to load articles: " + err.message);
-  }
 }
 
-// === Load Questions ===
-async function loadQuestions(){
-  const list = document.getElementById("questionList");
-  list.innerHTML="";
-  try{
-    const snap = await getDocs(collection(db,"boardQuestions"));
-    snap.forEach(d=>{
-      const div = document.createElement("div");
-      div.className="cms-list-item";
-      div.innerHTML = `
-        <span>${d.data().exam} | ${d.data().board} | ${d.data().year}</span>
-        <div>
-          <button data-edit="${d.id}">Edit</button>
-          <button data-del="${d.id}">Delete</button>
-        </div>`;
-      div.querySelector("[data-edit]").onclick = ()=>editQuestion(d.id);
-      div.querySelector("[data-del]").onclick = ()=>deleteQuestion(d.id);
-      list.appendChild(div);
+async function loadQuestions() {
+    const list = document.getElementById("questionList");
+    list.innerHTML = "Loading...";
+    const snap = await getDocs(collection(db, "boardQuestions"));
+    list.innerHTML = "";
+    snap.forEach(d => {
+        const item = d.data();
+        const div = document.createElement("div");
+        div.className = "cms-list-item";
+        div.innerHTML = `
+            <span>${item.exam} - ${item.board} (${item.year})</span>
+            <div>
+                <button class="edit-btn" data-id="${d.id}">Edit</button>
+                <button class="del-btn" data-id="${d.id}">Delete</button>
+            </div>`;
+        div.querySelector(".edit-btn").onclick = () => editQuestion(d.id);
+        div.querySelector(".del-btn").onclick = () => deleteQuestion(d.id);
+        list.appendChild(div);
     });
-  } catch(err){
-    alert("Failed to load questions: " + err.message);
-  }
 }
 
-// === Edit Article ===
-async function editArticle(id){
-  try{
-    const d = await getDoc(doc(db,"articles",id));
+// === Edit Functions (Populate forms) ===
+async function editArticle(id) {
+    const d = await getDoc(doc(db, "articles", id));
     const data = d.data();
     document.getElementById("title").value = data.title;
     document.getElementById("slug").value = data.slug;
@@ -161,21 +184,14 @@ async function editArticle(id){
     document.getElementById("image").value = data.image;
     quill.root.innerHTML = data.content;
 
-    editArticleId = id; // <-- important
-
-    document.querySelectorAll(".cms-section").forEach(s=>s.style.display="none");
-    document.getElementById("edit-article-section").style.display="block";
-  } catch(err){
-    alert("Failed to load article: " + err.message);
-  }
+    editArticleId = id;
+    document.getElementById("publish-article-btn").innerText = "Update Article";
+    showSection("add-article-section"); // Form e niye jabe
 }
 
-// === Edit Question ===
-async function editQuestion(id){
-  try{
-    const d = await getDoc(doc(db,"boardQuestions",id));
+async function editQuestion(id) {
+    const d = await getDoc(doc(db, "boardQuestions", id));
     const data = d.data();
-
     document.getElementById("exam-div").innerText = data.exam;
     document.getElementById("exam-div").dataset.value = data.exam;
     document.getElementById("board-div").innerText = data.board;
@@ -186,42 +202,49 @@ async function editQuestion(id){
     questionQuill.root.innerHTML = data.question;
     solutionQuill.root.innerHTML = data.solution;
 
-    editQuestionId = id; // <-- important
-
-    document.querySelectorAll(".cms-section").forEach(s=>s.style.display="none");
-    document.getElementById("edit-question-section").style.display="block";
-  } catch(err){
-    alert("Failed to load question: " + err.message);
-  }
+    editQuestionId = id;
+    document.getElementById("publish-question-btn").innerText = "Update Question";
+    showSection("add-question-section"); // Form e niye jabe
 }
 
-// === Delete Article ===
-async function deleteArticle(id){
-  if(!confirm("Delete Article?")) return;
-  try{
-    await deleteDoc(doc(db,"articles",id));
-    loadArticles();
-  } catch(err){
-    alert("Delete failed: " + err.message);
-  }
+// === Delete Functions ===
+async function deleteArticle(id) {
+    if (confirm("Are you sure?")) {
+        await deleteDoc(doc(db, "articles", id));
+        loadArticles();
+    }
 }
 
-// === Delete Question ===
-async function deleteQuestion(id){
-  if(!confirm("Delete Question?")) return;
-  try{
-    await deleteDoc(doc(db,"boardQuestions",id));
-    loadQuestions();
-  } catch(err){
-    alert("Delete failed: " + err.message);
-  }
+async function deleteQuestion(id) {
+    if (confirm("Are you sure?")) {
+        await deleteDoc(doc(db, "boardQuestions", id));
+        loadQuestions();
+    }
 }
 
-// === Auth Guard ===
-onAuthStateChanged(auth, user=>{
-  if(!user) location.href="/index.html";
-  else {
-    loadArticles();
-    loadQuestions();
-  }
+// === Helpers ===
+function resetArticleForm() {
+    document.getElementById("title").value = "";
+    document.getElementById("slug").value = "";
+    quill.setContents([]);
+    editArticleId = null;
+}
+
+function resetQuestionForm() {
+    document.getElementById("year").value = "";
+    document.getElementById("slug-q").value = "";
+    questionQuill.setContents([]);
+    solutionQuill.setContents([]);
+    editQuestionId = null;
+}
+
+// === Auth & Logout ===
+document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "index.html");
+
+onAuthStateChanged(auth, user => {
+    if (!user) location.href = "index.html";
+    else {
+        loadArticles();
+        loadQuestions();
+    }
 });
