@@ -1,4 +1,5 @@
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js"; 
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
@@ -35,7 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
   solutionQuill = new Quill('#solutionEditor', {theme:'snow'});
 });
 
-// === Publish Article ===
+// === Edit Mode Flags ===
+let editArticleId = null;
+let editQuestionId = null;
+
+// === Publish Article (Add or Update) ===
 document.getElementById("publish-article-btn").onclick = async () => {
   if(!quill) { alert("Editor not loaded"); return; }
 
@@ -52,15 +57,23 @@ document.getElementById("publish-article-btn").onclick = async () => {
   if(!data.title || !data.slug) { alert("Title & Slug required"); return; }
 
   try {
-    await addDoc(collection(db,"articles"), data);
-    alert("Article Published!");
+    if(editArticleId){
+      await updateDoc(doc(db,"articles",editArticleId), data);
+      alert("Article Updated!");
+      editArticleId = null;
+      document.getElementById("publish-article-btn").innerText = "Publish Article";
+    } else {
+      await addDoc(collection(db,"articles"), data);
+      alert("Article Published!");
+    }
     loadArticles();
+    clearArticleForm();
   } catch(err) {
     alert("Publish failed: " + err.message);
   }
 };
 
-// === Publish Question ===
+// === Publish Question (Add or Update) ===
 document.getElementById("publish-question-btn").onclick = async () => {
   if(!questionQuill || !solutionQuill) { alert("Editors not loaded"); return; }
 
@@ -79,9 +92,17 @@ document.getElementById("publish-question-btn").onclick = async () => {
   if(!data.title || !data.slug) { alert("Title & Slug required"); return; }
 
   try {
-    await addDoc(collection(db,"boardQuestions"), data);
-    alert("Question Published!");
+    if(editQuestionId){
+      await updateDoc(doc(db,"boardQuestions",editQuestionId), data);
+      alert("Question Updated!");
+      editQuestionId = null;
+      document.getElementById("publish-question-btn").innerText = "Publish Question";
+    } else {
+      await addDoc(collection(db,"boardQuestions"), data);
+      alert("Question Published!");
+    }
     loadQuestions();
+    clearQuestionForm();
   } catch(err) {
     alert("Publish failed: " + err.message);
   }
@@ -147,9 +168,12 @@ async function editArticle(id){
     document.getElementById("image").value = data.image;
     if(quill) quill.root.innerHTML = data.content;
 
+    editArticleId = id; // ✅ set edit mode
+
     // Show section
     document.querySelectorAll(".cms-section").forEach(s => s.style.display="none");
     document.getElementById("edit-article-section").style.display="block";
+    document.getElementById("publish-article-btn").innerText = "Update Article";
   } catch(err) {
     alert("Failed to load article: " + err.message);
   }
@@ -169,9 +193,12 @@ async function editQuestion(id){
     if(questionQuill) questionQuill.root.innerHTML = data.question;
     if(solutionQuill) solutionQuill.root.innerHTML = data.solution;
 
+    editQuestionId = id; // ✅ set edit mode
+
     // Show section
     document.querySelectorAll(".cms-section").forEach(s => s.style.display="none");
     document.getElementById("edit-question-section").style.display="block";
+    document.getElementById("publish-question-btn").innerText = "Update Question";
   } catch(err) {
     alert("Failed to load question: " + err.message);
   }
@@ -199,11 +226,31 @@ async function deleteQuestion(id){
   }
 }
 
+// === Clear Forms ===
+function clearArticleForm(){
+  document.getElementById("title").value="";
+  document.getElementById("slug").value="";
+  document.getElementById("category").value="";
+  document.getElementById("subject").value="";
+  document.getElementById("image").value="";
+  if(quill) quill.root.innerHTML="";
+}
+
+function clearQuestionForm(){
+  document.getElementById("q-title").value="";
+  document.getElementById("board").value="";
+  document.getElementById("class").value="";
+  document.getElementById("subject-q").value="";
+  document.getElementById("chapter").value="";
+  document.getElementById("slug-q").value="";
+  if(questionQuill) questionQuill.root.innerHTML="";
+  if(solutionQuill) solutionQuill.root.innerHTML="";
+}
+
 // === Auth Guard ===
 onAuthStateChanged(auth, user=>{
   if(!user) location.href="/index.html";
   else {
-    // Load lists
     loadArticles();
     loadQuestions();
   }
