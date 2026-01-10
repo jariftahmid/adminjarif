@@ -1,4 +1,17 @@
-/* General Reset */
+/* Premium Aesthetic Dashboard CSS */
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --secondary: #64748b;
+    --bg-main: #f8fafc;
+    --sidebar-bg: #0f172a;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --text-main: #1e293b;
+    --danger: #ef4444;
+    --success: #22c55e;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -7,8 +20,9 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #f4f7f6;
-    color: #333;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    overflow-x: hidden;
 }
 
 /* Dashboard Layout */
@@ -17,22 +31,26 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar Styling */
+/* Sidebar Animation & Style */
 .sidebar {
-    width: 260px;
-    background-color: #2c3e50;
+    width: 280px;
+    background-color: var(--sidebar-bg);
     color: white;
-    padding: 20px;
+    padding: 30px 20px;
     display: flex;
     flex-direction: column;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+    z-index: 100;
 }
 
 .sidebar h2 {
-    font-size: 1.5rem;
-    margin-bottom: 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    color: #94a3b8;
     text-align: center;
-    border-bottom: 1px solid #34495e;
-    padding-bottom: 10px;
 }
 
 .sidebar ul {
@@ -41,192 +59,223 @@ body {
 }
 
 .sidebar li {
-    margin-bottom: 15px;
-    cursor: pointer;
+    margin-bottom: 10px;
 }
 
 .sidebar li span {
-    font-weight: 500;
     display: block;
-    padding: 10px;
-    background: #34495e;
-    border-radius: 5px;
+    padding: 12px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    color: #cbd5e1;
+}
+
+.sidebar li span:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(5px);
 }
 
 .submenu {
-    margin-top: 10px;
-    padding-left: 15px;
+    padding-left: 10px;
+    margin-top: 5px;
+    overflow: hidden;
+    animation: slideIn 0.4s ease;
 }
 
 .submenu li {
-    padding: 8px;
+    padding: 10px 15px;
     font-size: 0.9rem;
-    transition: 0.3s;
-    border-radius: 4px;
+    cursor: pointer;
+    border-radius: 8px;
+    color: #94a3b8;
+    transition: var(--transition);
 }
 
 .submenu li:hover {
-    background-color: #3498db;
+    background: var(--primary);
+    color: white;
 }
 
 #logoutBtn {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    border: 1px solid var(--danger);
     padding: 12px;
-    border-radius: 5px;
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
-    transition: 0.3s;
+    transition: var(--transition);
 }
 
 #logoutBtn:hover {
-    background-color: #c0392b;
+    background: var(--danger);
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-/* Main Content Area */
+/* Main Content with Animation */
 .main-content {
     flex-grow: 1;
     padding: 40px;
-    overflow-y: auto;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
 .cms-section {
-    display: none; /* JS control korbe */
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    max-width: 900px;
+    display: none;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    max-width: 1000px;
     margin: 0 auto;
+    animation: fadeIn 0.5s ease-out;
 }
 
-.cms-section h2 {
-    margin-bottom: 20px;
-    color: #2c3e50;
-    border-left: 5px solid #3498db;
-    padding-left: 15px;
-}
-
-/* Form Elements */
+/* Form Styles */
 input {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
+    padding: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-family: inherit;
+    transition: var(--transition);
+    background: #fdfdfd;
 }
 
-h4 {
-    margin: 15px 0 10px;
-    color: #7f8c8d;
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
-/* Custom Select Dropdown */
+/* Custom Dropdown Aesthetic */
 .custom-select {
-    width: 100%;
-    padding: 12px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 5px;
+    padding: 14px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 8px;
     cursor: pointer;
-    position: relative;
+    font-weight: 500;
+    transition: var(--transition);
 }
 
-.custom-select::after {
-    content: '▾';
-    position: absolute;
-    right: 15px;
+.custom-select:hover {
+    border-color: var(--primary);
 }
 
 .custom-select-options {
-    display: none;
-    border: 1px solid #ddd;
     background: white;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 10;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+    overflow: hidden;
+    animation: dropdownAnim 0.3s ease;
 }
 
 .custom-select-options div {
-    padding: 10px;
-    cursor: pointer;
+    padding: 12px 15px;
     transition: 0.2s;
 }
 
 .custom-select-options div:hover {
-    background-color: #3498db;
-    color: white;
+    background: #f1f5f9;
+    color: var(--primary);
+    padding-left: 20px;
 }
 
-/* Buttons */
+/* Professional Buttons */
 button {
+    font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    border: none;
-    transition: 0.3s;
 }
 
 #publish-article-btn, #publish-question-btn {
-    background-color: #27ae60;
+    background: var(--primary);
     color: white;
-    padding: 15px 25px;
-    border-radius: 5px;
-    font-size: 1rem;
+    padding: 16px;
+    border-radius: 12px;
     font-weight: 600;
-    margin-top: 20px;
     width: 100%;
+    margin-top: 25px;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    transition: var(--transition);
 }
 
 #publish-article-btn:hover, #publish-question-btn:hover {
-    background-color: #219150;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
 }
 
-/* List Items (Edit/Delete Section) */
+/* List Items / Data Table Look */
 .cms-list-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid #eee;
+    padding: 18px;
+    background: white;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    transition: var(--transition);
+    border: 1px solid transparent;
 }
 
-.cms-list-item:last-child {
-    border-bottom: none;
-}
-
-.cms-list-item span {
-    font-weight: 500;
+.cms-list-item:hover {
+    transform: scale(1.01);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-color: var(--primary);
 }
 
 .edit-btn {
-    background: #3498db;
-    color: white;
-    padding: 5px 12px;
-    border-radius: 4px;
-    margin-right: 5px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    margin-right: 8px;
 }
 
 .del-btn {
-    background: #e74c3c;
-    color: white;
-    padding: 5px 12px;
-    border-radius: 4px;
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    padding: 8px 16px;
+    border-radius: 8px;
 }
 
-.edit-btn:hover { background: #2980b9; }
-.del-btn:hover { background: #c0392b; }
+.edit-btn:hover { background: var(--primary); color: white; }
+.del-btn:hover { background: var(--danger); color: white; }
 
-/* Quill Editor Height Fix */
-.ql-container {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-.ql-toolbar {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    background: #f8f9fa;
+
+@keyframes slideIn {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 200px; }
+}
+
+@keyframes dropdownAnim {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Quill Editor Premium Look */
+.ql-toolbar.ql-snow {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px 12px 0 0;
+    background: #f8fafc;
+}
+
+.ql-container.ql-snow {
+    border: 1px solid #e2e8f0;
+    border-radius: 0 0 12px 12px;
+    min-height: 200px;
+    font-size: 1rem;
 }
