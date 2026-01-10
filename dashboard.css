@@ -185,3 +185,90 @@ button:hover {
 .custom-select-options div:hover {
     background: var(--primary);
 }
+/* --- Edit List Container --- */
+#articleList, #questionList {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* --- Premium List Item Card --- */
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px 20px;
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    transition: 0.3s ease;
+}
+
+.list-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-2px);
+    border-color: var(--primary);
+}
+
+.item-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+.item-info p {
+    margin: 5px 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* --- Action Buttons Group --- */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Base Style for Action Buttons */
+.btn-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s all;
+    border: none;
+}
+
+/* Specific Edit Button - Soft Blue/Indigo */
+.edit-btn {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.edit-btn:hover {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Specific Delete Button - Soft Red/Rose */
+.delete-btn {
+    background: rgba(244, 63, 94, 0.15);
+    color: #fb7185;
+    border: 1px solid rgba(244, 63, 94, 0.2);
+}
+
+.delete-btn:hover {
+    background: #e11d48;
+    color: white;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+}
+
+/* Icons within buttons */
+.btn-action i {
+    font-size: 1rem;
+}
