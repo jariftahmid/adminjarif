@@ -10,6 +10,8 @@
 <body>
 
 <div class="dashboard-container">
+
+  <!-- Sidebar -->
   <aside class="sidebar">
     <h2>CMS Menu</h2>
     <ul>
@@ -31,7 +33,9 @@
     <button id="logoutBtn">Logout</button>
   </aside>
 
+  <!-- Main Content -->
   <main class="main-content">
+
     <!-- Add Article -->
     <div id="add-article-section" class="cms-section">
       <h2>Add Article</h2>
@@ -47,33 +51,50 @@
     <!-- Add Question -->
     <div id="add-question-section" class="cms-section">
       <h2>Add Question</h2>
-      <select id="board">
-        <option value="">Select Board</option>
-        <option value="SSC">SSC</option>
-        <option value="HSC">HSC</option>
-      </select>
+
+      <div class="custom-select" id="exam-div">Select Exam</div>
+      <div class="custom-select-options" id="exam-options">
+        <div data-value="SSC">SSC</div>
+        <div data-value="HSC">HSC</div>
+      </div>
+
+      <div class="custom-select" id="board-div">Select Board</div>
+      <div class="custom-select-options" id="board-options">
+        <div data-value="Dhaka">Dhaka</div>
+        <div data-value="Chittagong">Chittagong</div>
+        <div data-value="Rajshahi">Rajshahi</div>
+        <div data-value="Sylhet">Sylhet</div>
+        <div data-value="Barisal">Barisal</div>
+        <div data-value="Comilla">Comilla</div>
+        <div data-value="Jessore">Jessore</div>
+        <div data-value="Mymensingh">Mymensingh</div>
+      </div>
+
       <input id="year" placeholder="Year">
       <input id="subject-q" placeholder="Subject">
-      <input id="chapter" placeholder="Chapter">
       <input id="slug-q" placeholder="Slug">
+
       <h4>Question</h4>
       <div id="questionEditor" style="height:200px;"></div>
-      <h4>Solution</h4>
+
+      <h4>Answer / Solution</h4>
       <div id="solutionEditor" style="height:200px;"></div>
+
       <button id="publish-question-btn">Publish Question</button>
     </div>
 
-    <!-- Edit Articles -->
+    <!-- Edit Article -->
     <div id="edit-article-section" class="cms-section">
       <h2>Edit Articles</h2>
       <div id="articleList"></div>
     </div>
 
-    <!-- Edit Questions -->
+    <!-- Edit Question -->
     <div id="edit-question-section" class="cms-section">
       <h2>Edit Questions</h2>
       <div id="questionList"></div>
     </div>
+
   </main>
 </div>
 
