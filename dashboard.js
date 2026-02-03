@@ -4,7 +4,7 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 
 // === OneSignal Notification Helper ===
 async function sendOneSignalNotification(title, slug, imageUrl) {
-    const REST_API_KEY = "YOUR_REST_API_KEY_HERE"; // <--- Ekhane Key-ta boshan
+    const REST_API_KEY = "os_v2_app_qgi6hc5el5cs5n5ylfxjo4mufqgpy2ttp6au7cnemjmmitzgidoib46k42nch5pxij5hr4ktw5hf3md57a2rpvwad5nhqilcerqgmkq"; // <--- Ekhane Key-ta boshan
     const APP_ID = "182391e8-72ab-419b-a920-6f7d4f697de6";
 
     const data = {
