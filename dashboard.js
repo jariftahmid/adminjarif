@@ -2,35 +2,42 @@ import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// === OneSignal Notification Helper ===
+// === OneSignal Notification Helper (Updated) ===
 async function sendOneSignalNotification(title, slug, imageUrl) {
-    const REST_API_KEY = "os_v2_app_qgi6hc5el5cs5n5ylfxjo4mufqgpy2ttp6au7cnemjmmitzgidoib46k42nch5pxij5hr4ktw5hf3md57a2rpvwad5nhqilcerqgmkq"; // <--- Ekhane Key-ta boshan
     const APP_ID = "182391e8-72ab-419b-a920-6f7d4f697de6";
 
     const data = {
         app_id: APP_ID,
-        included_segments: ["All"],
+        included_segments: ["All"], // "All" এর বদলে "Subscribed Users" ব্যবহার করা ভালো
         headings: { "en": "New Article Published! 📢" },
         contents: { "en": title },
-        url: `https://boardques.vercel.app/article/${slug}`, // Apnar real domain ekhane boshan
+        url: `https://boardques.vercel.app{slug}`,
         chrome_web_image: imageUrl, 
-        chrome_web_icon: "https://boardques.vercel.app/favicon.png" // Apnar logo link
+        chrome_web_icon: "https://boardques.vercel.app"
     };
 
     try {
-        await fetch("https://onesignal.com/api/v1/notifications", {
+        // সরাসরি OneSignal এর বদলে আপনার /api/notify লিঙ্ক কল হবে
+        const response = await fetch("/api/notify", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                "Authorization": `Basic ${REST_API_KEY}`
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         });
-        console.log("Push Notification Sent Successfully!");
+
+        const result = await response.json();
+        
+        if (response.ok) {
+            console.log("Push Notification Sent Successfully!", result);
+        } else {
+            console.error("Failed to send notification:", result);
+        }
     } catch (error) {
-        console.error("OneSignal Error:", error);
+        console.error("Connection Error:", error);
     }
 }
+
 
 // === Quill Editors Initialization ===
 let quill, questionQuill, solutionQuill;
