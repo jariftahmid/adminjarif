@@ -2,10 +2,38 @@ import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
+// === OneSignal Notification Helper ===
+async function sendOneSignalNotification(title, slug, imageUrl) {
+    const REST_API_KEY = "YOUR_REST_API_KEY_HERE"; // <--- Ekhane Key-ta boshan
+    const APP_ID = "182391e8-72ab-419b-a920-6f7d4f697de6";
+
+    const data = {
+        app_id: APP_ID,
+        included_segments: ["All"],
+        headings: { "en": "New Article Published! 📢" },
+        contents: { "en": title },
+        url: `https://boardques.vercel.app/article/${slug}`, // Apnar real domain ekhane boshan
+        chrome_web_image: imageUrl, 
+        chrome_web_icon: "https://boardques.vercel.app/favicon.png" // Apnar logo link
+    };
+
+    try {
+        await fetch("https://onesignal.com/api/v1/notifications", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "Authorization": `Basic ${REST_API_KEY}`
+            },
+            body: JSON.stringify(data)
+        });
+        console.log("Push Notification Sent Successfully!");
+    } catch (error) {
+        console.error("OneSignal Error:", error);
+    }
+}
+
 // === Quill Editors Initialization ===
 let quill, questionQuill, solutionQuill;
-
-// Editor initialize hobe DOM load holei
 document.addEventListener("DOMContentLoaded", () => {
     quill = new Quill('#editor', { theme: 'snow' });
     questionQuill = new Quill('#questionEditor', { theme: 'snow' });
@@ -21,9 +49,10 @@ const sections = {
 };
 
 Object.keys(sections).forEach(btnId => {
-    document.getElementById(btnId).onclick = () => {
-        showSection(sections[btnId]);
-    };
+    const btn = document.getElementById(btnId);
+    if(btn) {
+        btn.onclick = () => showSection(sections[btnId]);
+    }
 });
 
 function showSection(sectionId) {
@@ -31,10 +60,11 @@ function showSection(sectionId) {
     document.getElementById(sectionId).style.display = "block";
 }
 
-// === Custom Dropdown Logic (SSC/HSC & Boards) ===
+// === Custom Dropdown Logic ===
 function setupDropdown(divId, optionsId) {
     const div = document.getElementById(divId);
     const options = document.getElementById(optionsId);
+    if(!div || !options) return;
 
     div.onclick = (e) => {
         e.stopPropagation();
@@ -49,16 +79,13 @@ function setupDropdown(divId, optionsId) {
         };
     });
 }
-
 setupDropdown("exam-div", "exam-options");
 setupDropdown("board-div", "board-options");
 
-// Close dropdowns when clicking outside
 window.onclick = () => {
     document.querySelectorAll(".custom-select-options").forEach(opt => opt.style.display = "none");
 };
 
-// === Global edit IDs ===
 let editArticleId = null;
 let editQuestionId = null;
 
@@ -85,7 +112,10 @@ document.getElementById("publish-article-btn").onclick = async () => {
         } else {
             data.createdAt = new Date();
             await addDoc(collection(db, "articles"), data);
-            alert("Article Published!");
+            
+            // 🔥 Push Notification Sent here
+            await sendOneSignalNotification(data.title, data.slug, data.image);
+            alert("Article Published & Notification Sent!");
         }
         resetArticleForm();
         loadArticles();
@@ -97,8 +127,8 @@ document.getElementById("publish-article-btn").onclick = async () => {
 // === Publish/Update Question ===
 document.getElementById("publish-question-btn").onclick = async () => {
     const data = {
-        exam: document.getElementById("exam-div").dataset.value,
-        board: document.getElementById("board-div").dataset.value,
+        exam: document.getElementById("exam-div")?.dataset.value,
+        board: document.getElementById("board-div")?.dataset.value,
         year: document.getElementById("year").value,
         subject: document.getElementById("subject-q").value,
         slug: document.getElementById("slug-q").value,
@@ -108,7 +138,7 @@ document.getElementById("publish-question-btn").onclick = async () => {
     };
 
     if (!data.exam || !data.board || !data.year || !data.slug) {
-        alert("Fill all fields including dropdowns");
+        alert("Fill all fields");
         return;
     }
 
@@ -121,6 +151,8 @@ document.getElementById("publish-question-btn").onclick = async () => {
         } else {
             data.createdAt = new Date();
             await addDoc(collection(db, "boardQuestions"), data);
+            // Optional: Question publish holeo notification chaitay paren
+            // await sendOneSignalNotification(`New Question: ${data.exam} ${data.year}`, data.slug, "");
             alert("Question Published!");
         }
         resetQuestionForm();
@@ -130,9 +162,10 @@ document.getElementById("publish-question-btn").onclick = async () => {
     }
 };
 
-// === Load Data Functions ===
+// === Load, Edit, Delete & Auth Functions remain same as your original code ===
 async function loadArticles() {
     const list = document.getElementById("articleList");
+    if(!list) return;
     list.innerHTML = "Loading...";
     const snap = await getDocs(collection(db, "articles"));
     list.innerHTML = "";
@@ -140,12 +173,7 @@ async function loadArticles() {
         const item = d.data();
         const div = document.createElement("div");
         div.className = "cms-list-item";
-        div.innerHTML = `
-            <span>${item.title}</span>
-            <div>
-                <button class="edit-btn" data-id="${d.id}">Edit</button>
-                <button class="del-btn" data-id="${d.id}">Delete</button>
-            </div>`;
+        div.innerHTML = `<span>${item.title}</span><div><button class="edit-btn">Edit</button><button class="del-btn">Delete</button></div>`;
         div.querySelector(".edit-btn").onclick = () => editArticle(d.id);
         div.querySelector(".del-btn").onclick = () => deleteArticle(d.id);
         list.appendChild(div);
@@ -154,6 +182,7 @@ async function loadArticles() {
 
 async function loadQuestions() {
     const list = document.getElementById("questionList");
+    if(!list) return;
     list.innerHTML = "Loading...";
     const snap = await getDocs(collection(db, "boardQuestions"));
     list.innerHTML = "";
@@ -161,19 +190,13 @@ async function loadQuestions() {
         const item = d.data();
         const div = document.createElement("div");
         div.className = "cms-list-item";
-        div.innerHTML = `
-            <span>${item.exam} - ${item.board} (${item.year})</span>
-            <div>
-                <button class="edit-btn" data-id="${d.id}">Edit</button>
-                <button class="del-btn" data-id="${d.id}">Delete</button>
-            </div>`;
+        div.innerHTML = `<span>${item.exam} - ${item.board} (${item.year})</span><div><button class="edit-btn">Edit</button><button class="del-btn">Delete</button></div>`;
         div.querySelector(".edit-btn").onclick = () => editQuestion(d.id);
         div.querySelector(".del-btn").onclick = () => deleteQuestion(d.id);
         list.appendChild(div);
     });
 }
 
-// === Edit Functions (Populate forms) ===
 async function editArticle(id) {
     const d = await getDoc(doc(db, "articles", id));
     const data = d.data();
@@ -183,10 +206,9 @@ async function editArticle(id) {
     document.getElementById("subject").value = data.subject;
     document.getElementById("image").value = data.image;
     quill.root.innerHTML = data.content;
-
     editArticleId = id;
     document.getElementById("publish-article-btn").innerText = "Update Article";
-    showSection("add-article-section"); // Form e niye jabe
+    showSection("add-article-section");
 }
 
 async function editQuestion(id) {
@@ -201,50 +223,20 @@ async function editQuestion(id) {
     document.getElementById("slug-q").value = data.slug;
     questionQuill.root.innerHTML = data.question;
     solutionQuill.root.innerHTML = data.solution;
-
     editQuestionId = id;
     document.getElementById("publish-question-btn").innerText = "Update Question";
-    showSection("add-question-section"); // Form e niye jabe
+    showSection("add-question-section");
 }
 
-// === Delete Functions ===
-async function deleteArticle(id) {
-    if (confirm("Are you sure?")) {
-        await deleteDoc(doc(db, "articles", id));
-        loadArticles();
-    }
-}
+async function deleteArticle(id) { if (confirm("Are you sure?")) { await deleteDoc(doc(db, "articles", id)); loadArticles(); } }
+async function deleteQuestion(id) { if (confirm("Are you sure?")) { await deleteDoc(doc(db, "boardQuestions", id)); loadQuestions(); } }
 
-async function deleteQuestion(id) {
-    if (confirm("Are you sure?")) {
-        await deleteDoc(doc(db, "boardQuestions", id));
-        loadQuestions();
-    }
-}
+function resetArticleForm() { document.getElementById("title").value = ""; document.getElementById("slug").value = ""; quill.setContents([]); editArticleId = null; }
+function resetQuestionForm() { document.getElementById("year").value = ""; document.getElementById("slug-q").value = ""; questionQuill.setContents([]); solutionQuill.setContents([]); editQuestionId = null; }
 
-// === Helpers ===
-function resetArticleForm() {
-    document.getElementById("title").value = "";
-    document.getElementById("slug").value = "";
-    quill.setContents([]);
-    editArticleId = null;
-}
-
-function resetQuestionForm() {
-    document.getElementById("year").value = "";
-    document.getElementById("slug-q").value = "";
-    questionQuill.setContents([]);
-    solutionQuill.setContents([]);
-    editQuestionId = null;
-}
-
-// === Auth & Logout ===
 document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "index.html");
 
 onAuthStateChanged(auth, user => {
     if (!user) location.href = "index.html";
-    else {
-        loadArticles();
-        loadQuestions();
-    }
+    else { loadArticles(); loadQuestions(); }
 });
