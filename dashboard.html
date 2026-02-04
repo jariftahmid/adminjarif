@@ -4,17 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CMS Dashboard | Professor Jarif</title>
+
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <link rel="stylesheet" href="dashboard.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "8191e38b-a45f-452e-b7b8-596e9771942c",
+      safari_web_id: "web.onesignal.auto.1881b8be-1ae3-4d80-a99d-32f491a07c07",
+      notifyButton: {
+        enable: true,
+      },
+    });
+  });
+</script>
 </head>
 <body>
 
 <div class="dashboard-container">
-
-  <!-- Sidebar -->
   <aside class="sidebar">
     <h2>CMS Menu</h2>
     <ul>
@@ -36,10 +48,7 @@
     <button id="logoutBtn">Logout</button>
   </aside>
 
-  <!-- Main Content -->
   <main class="main-content">
-
-    <!-- Add Article -->
     <div id="add-article-section" class="cms-section">
       <h2>Add Article</h2>
       <input id="title" placeholder="Title">
@@ -51,10 +60,8 @@
       <button id="publish-article-btn">Publish Article</button>
     </div>
 
-    <!-- Add Question -->
-    <div id="add-question-section" class="cms-section">
+    <div id="add-question-section" class="cms-section" style="display:none;">
       <h2>Add Question</h2>
-
       <div class="custom-select" id="exam-div">Select Exam</div>
       <div class="custom-select-options" id="exam-options">
         <div data-value="SSC">SSC</div>
@@ -65,39 +72,26 @@
       <div class="custom-select-options" id="board-options">
         <div data-value="Dhaka">Dhaka</div>
         <div data-value="Chittagong">Chittagong</div>
-        <div data-value="Rajshahi">Rajshahi</div>
-        <div data-value="Sylhet">Sylhet</div>
-        <div data-value="Barisal">Barisal</div>
-        <div data-value="Comilla">Comilla</div>
-        <div data-value="Jessore">Jessore</div>
-        <div data-value="Mymensingh">Mymensingh</div>
-      </div>
+        </div>
 
       <input id="year" placeholder="Year">
       <input id="subject-q" placeholder="Subject">
       <input id="slug-q" placeholder="Slug">
-
       <h4>Question</h4>
       <div id="questionEditor" style="height:200px;"></div>
-
       <h4>Answer / Solution</h4>
       <div id="solutionEditor" style="height:200px;"></div>
-
       <button id="publish-question-btn">Publish Question</button>
     </div>
 
-    <!-- Edit Article -->
-    <div id="edit-article-section" class="cms-section">
+    <div id="edit-article-section" class="cms-section" style="display:none;">
       <h2>Edit Articles</h2>
       <div id="articleList"></div>
     </div>
-
-    <!-- Edit Question -->
-    <div id="edit-question-section" class="cms-section">
+    <div id="edit-question-section" class="cms-section" style="display:none;">
       <h2>Edit Questions</h2>
       <div id="questionList"></div>
     </div>
-
   </main>
 </div>
 
