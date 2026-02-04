@@ -2,42 +2,32 @@ import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// === OneSignal Notification Helper (Updated) ===
+// === OneSignal Notification Helper (Calling Vercel API) ===
 async function sendOneSignalNotification(title, slug, imageUrl) {
-    const APP_ID = "182391e8-72ab-419b-a920-6f7d4f697de6";
-
-    const data = {
-        app_id: APP_ID,
-        included_segments: ["All"], // "All" এর বদলে "Subscribed Users" ব্যবহার করা ভালো
-        headings: { "en": "New Article Published! 📢" },
-        contents: { "en": title },
-        url: `https://boardques.vercel.app{slug}`,
-        chrome_web_image: imageUrl, 
-        chrome_web_icon: "https://boardques.vercel.app"
-    };
-
     try {
-        // সরাসরি OneSignal এর বদলে আপনার /api/notify লিঙ্ক কল হবে
         const response = await fetch("/api/notify", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title, slug, imageUrl })
         });
 
-        const result = await response.json();
+        // 500 error ba onno error handle korar jonno prothome text porchi
+        const responseText = await response.text();
         
-        if (response.ok) {
-            console.log("Push Notification Sent Successfully!", result);
-        } else {
-            console.error("Failed to send notification:", result);
+        try {
+            const data = JSON.parse(responseText);
+            if (response.ok) {
+                console.log("Notification sent successfully:", data);
+            } else {
+                console.error("OneSignal API Error:", data);
+            }
+        } catch (e) {
+            console.error("Server returned non-JSON response. Check Vercel Logs.", responseText);
         }
     } catch (error) {
-        console.error("Connection Error:", error);
+        console.error("Network or API Error:", error);
     }
 }
-
 
 // === Quill Editors Initialization ===
 let quill, questionQuill, solutionQuill;
@@ -158,8 +148,6 @@ document.getElementById("publish-question-btn").onclick = async () => {
         } else {
             data.createdAt = new Date();
             await addDoc(collection(db, "boardQuestions"), data);
-            // Optional: Question publish holeo notification chaitay paren
-            // await sendOneSignalNotification(`New Question: ${data.exam} ${data.year}`, data.slug, "");
             alert("Question Published!");
         }
         resetQuestionForm();
@@ -169,7 +157,7 @@ document.getElementById("publish-question-btn").onclick = async () => {
     }
 };
 
-// === Load, Edit, Delete & Auth Functions remain same as your original code ===
+// === Load Data Functions ===
 async function loadArticles() {
     const list = document.getElementById("articleList");
     if(!list) return;
@@ -204,6 +192,7 @@ async function loadQuestions() {
     });
 }
 
+// === Edit & Delete Functions ===
 async function editArticle(id) {
     const d = await getDoc(doc(db, "articles", id));
     const data = d.data();
@@ -238,9 +227,23 @@ async function editQuestion(id) {
 async function deleteArticle(id) { if (confirm("Are you sure?")) { await deleteDoc(doc(db, "articles", id)); loadArticles(); } }
 async function deleteQuestion(id) { if (confirm("Are you sure?")) { await deleteDoc(doc(db, "boardQuestions", id)); loadQuestions(); } }
 
-function resetArticleForm() { document.getElementById("title").value = ""; document.getElementById("slug").value = ""; quill.setContents([]); editArticleId = null; }
-function resetQuestionForm() { document.getElementById("year").value = ""; document.getElementById("slug-q").value = ""; questionQuill.setContents([]); solutionQuill.setContents([]); editQuestionId = null; }
+function resetArticleForm() { 
+    document.getElementById("title").value = ""; 
+    document.getElementById("slug").value = ""; 
+    document.getElementById("image").value = "";
+    quill.setContents([]); 
+    editArticleId = null; 
+}
 
+function resetQuestionForm() { 
+    document.getElementById("year").value = ""; 
+    document.getElementById("slug-q").value = ""; 
+    questionQuill.setContents([]); 
+    solutionQuill.setContents([]); 
+    editQuestionId = null; 
+}
+
+// === Auth & Logout ===
 document.getElementById("logoutBtn").onclick = () => signOut(auth).then(() => location.href = "index.html");
 
 onAuthStateChanged(auth, user => {
