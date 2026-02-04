@@ -5,7 +5,7 @@ import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/
 // === OneSignal Notification Helper (Calling Vercel API) ===
 async function sendOneSignalNotification(title, slug, imageUrl) {
     try {
-        const response = await fetch("/api/notify", {
+        const response = await fetch("/api/notify.js", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ title, slug, imageUrl })
