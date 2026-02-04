@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing title or slug" });
     }
 
-    const REST_API_KEY = "os_v2_app_qgi6hc5el5cs5n5ylfxjo4mufqgpy2ttp6au7cnemjmmitzgidoib46k42nch5pxij5hr4ktw5hf3md57a2rpvwad5nhqilcerqgmkq";
+    const REST_API_KEY = "os_v2_app_darzd2dsvnazxkjan56u62l543lmlovs34aei2n5locqn7tvlsomkhjvel2ncso7cce5326bagerwpxfjhmucydltmgvhguejksfsdq";
     const APP_ID = "182391e8-72ab-419b-a920-6f7d4f697de6";
 
     try {
