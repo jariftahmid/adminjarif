@@ -2,33 +2,6 @@ import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "
 import { auth, db } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-// === OneSignal Notification Helper (Calling Vercel API) ===
-async function sendOneSignalNotification(title, slug, imageUrl) {
-    try {
-        const response = await fetch("api/notify.js", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title, slug, imageUrl })
-        });
-
-        // 500 error ba onno error handle korar jonno prothome text porchi
-        const responseText = await response.text();
-        
-        try {
-            const data = JSON.parse(responseText);
-            if (response.ok) {
-                console.log("Notification sent successfully:", data);
-            } else {
-                console.error("OneSignal API Error:", data);
-            }
-        } catch (e) {
-            console.error("Server returned non-JSON response. Check Vercel Logs.", responseText);
-        }
-    } catch (error) {
-        console.error("Network or API Error:", error);
-    }
-}
-
 // === Quill Editors Initialization ===
 let quill, questionQuill, solutionQuill;
 document.addEventListener("DOMContentLoaded", () => {
